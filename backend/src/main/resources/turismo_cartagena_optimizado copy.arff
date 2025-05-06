@@ -1,0 +1,17 @@
+@RELATION turismo_cartagena_optimizado
+
+@ATTRIBUTE Lugar_Origen {Nacional, Internacional}
+@ATTRIBUTE Edad NUMERIC
+@ATTRIBUTE Tiempo_Estancia NUMERIC
+@ATTRIBUTE Presupuesto_Promedio NUMERIC
+@ATTRIBUTE Motivo_Viaje {Vacaciones, Negocios, Otro}
+@ATTRIBUTE Uso_Tour_Guiado {Si, No}
+@ATTRIBUTE Satisfaccion_Visita {Baja, Media, Alta}
+@ATTRIBUTE Nivel_Gasto_Total NUMERIC
+@ATTRIBUTE Cantidad_Actividades NUMERIC
+@ATTRIBUTE Planea_Regresar {Si, No}
+@ATTRIBUTE Recomendar_Cartagena {Si, No}
+
+@DATA
+Nacional,26,5,120,Vacaciones,Si,Baja,600,10,No,?
+Internacional,53,6,183,Vacaciones,Si,Alta,1098,6,Si,?
