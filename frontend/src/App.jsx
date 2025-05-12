@@ -1,205 +1,196 @@
 import React, { useState } from "react";
-import axios from "axios";
-import "./App.css";
+import { predecirDemanda } from "./api"; // Importar el servicio
+import './App.css';
 
-function App() {
+const App = () => {
   const [formulario, setFormulario] = useState({
-    lugarOrigen: "",
+    lugarOrigen: "Nacional", // Valor por defecto
     edad: "",
     tiempoEstancia: "",
     presupuestoPromedio: "",
-    motivoViaje: "",
-    usoTourGuiado: "",
-    satisfaccionVisita: "", // Cambiado para aceptar "alta" o "baja"
+    motivoViaje: "Vacaciones", // Valor por defecto
+    usoTourGuiado: "Si", // Valor por defecto
+    satisfaccionVisita: "Baja", // Valor por defecto
     nivelGastoTotal: "",
     cantidadActividades: "",
-    planeaRegresar: "",
+    planeaRegresar: "No", // Valor por defecto
   });
 
   const [resultado, setResultado] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Función para manejar cambios en el formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormulario({ ...formulario, [name]: value });
+    setFormulario((prevFormulario) => ({
+      ...prevFormulario,
+      [name]: value,
+    }));
   };
 
-  // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validación de campos
-    if (
-      !formulario.lugarOrigen ||
-      !formulario.edad ||
-      !formulario.tiempoEstancia ||
-      !formulario.presupuestoPromedio ||
-      !formulario.motivoViaje ||
-      !formulario.usoTourGuiado ||
-      !formulario.satisfaccionVisita ||
-      !formulario.nivelGastoTotal ||
-      !formulario.cantidadActividades ||
-      !formulario.planeaRegresar
-    ) {
-      alert("Por favor, completa todos los campos.");
-      return;
-    }
-
-    // Convertimos la satisfacción de texto a un valor numérico
-    const datos = {
-      ...formulario,
-      edad: Number(formulario.edad),
-      tiempoEstancia: Number(formulario.tiempoEstancia),
-      presupuestoPromedio: Number(formulario.presupuestoPromedio),
-      satisfaccionVisita: formulario.satisfaccionVisita === "alta" ? 5 : 1, // Ejemplo de conversión
-      nivelGastoTotal: Number(formulario.nivelGastoTotal),
-      cantidadActividades: Number(formulario.cantidadActividades),
-      planeaRegresar: formulario.planeaRegresar === "Sí" ? "Sí" : "No", // Aseguramos que sea "Sí" o "No"
-    };
+    setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:8080/predecir", datos);
-
-      // Mostrar la respuesta en consola para verificar que es correcta
-      console.log("Respuesta del backend:", res.data);
-
-      // Actualizar el estado de resultado
-      setResultado(res.data); // Guardamos la respuesta en el estado
+      const data = await predecirDemanda(formulario);
+      setResultado(data); // Guardamos el resultado de la predicción
     } catch (error) {
-      console.error("Error en la predicción", error);
-      alert("Hubo un error al realizar la predicción.");
+      console.error("Error al predecir demanda:", error);
+      alert("Hubo un error con la predicción.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="container">
-      <h1>Predicción Turística</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Lugar de Origen</label>
-          <input
-            type="text"
+    <div className="prediccion-container">
+      <h1 className="prediccion-title">Predicción de Turismo</h1>
+      <form onSubmit={handleSubmit} className="prediccion-form">
+        <div className="form-row">
+          <label htmlFor="lugarOrigen" className="form-label">Lugar de Origen:</label>
+          <select
             name="lugarOrigen"
             value={formulario.lugarOrigen}
             onChange={handleChange}
-            required
-          />
+            className="form-input"
+          >
+            <option value="Nacional">Nacional</option>
+            <option value="Internacional">Internacional</option>
+          </select>
         </div>
 
-        <div className="form-group">
-          <label>Edad</label>
+        <div className="form-row">
+          <label htmlFor="edad" className="form-label">Edad:</label>
           <input
             type="number"
             name="edad"
-            value={formulario.edad || ""}
+            value={formulario.edad}
             onChange={handleChange}
             required
+            className="form-input"
           />
         </div>
 
-        <div className="form-group">
-          <label>Tiempo de Estancia (días)</label>
+        <div className="form-row">
+          <label htmlFor="tiempoEstancia" className="form-label">Tiempo de Estancia:</label>
           <input
             type="number"
             name="tiempoEstancia"
-            value={formulario.tiempoEstancia || ""}
+            value={formulario.tiempoEstancia}
             onChange={handleChange}
             required
+            className="form-input"
           />
         </div>
 
-        <div className="form-group">
-          <label>Presupuesto Promedio</label>
+        <div className="form-row">
+          <label htmlFor="presupuestoPromedio" className="form-label">Presupuesto Promedio:</label>
           <input
             type="number"
             name="presupuestoPromedio"
-            value={formulario.presupuestoPromedio || ""}
+            value={formulario.presupuestoPromedio}
             onChange={handleChange}
             required
+            className="form-input"
           />
         </div>
 
-        <div className="form-group">
-          <label>Motivo del Viaje</label>
-          <input
-            type="text"
+        <div className="form-row">
+          <label htmlFor="motivoViaje" className="form-label">Motivo de Viaje:</label>
+          <select
             name="motivoViaje"
             value={formulario.motivoViaje}
             onChange={handleChange}
-            required
-          />
+            className="form-input"
+          >
+            <option value="Vacaciones">Vacaciones</option>
+            <option value="Negocios">Negocios</option>
+            <option value="Otro">Otro</option>
+          </select>
         </div>
 
-        <div className="form-group">
-          <label>Uso de Tour Guiado (Sí/No)</label>
-          <input
-            type="text"
+        <div className="form-row">
+          <label htmlFor="usoTourGuiado" className="form-label">¿Usa Tour Guiado?:</label>
+          <select
             name="usoTourGuiado"
             value={formulario.usoTourGuiado}
             onChange={handleChange}
-            required
-          />
+            className="form-input"
+          >
+            <option value="Si">Si</option>
+            <option value="No">No</option>
+          </select>
         </div>
 
-        <div className="form-group">
-          <label>Satisfacción de la Visita</label>
+        <div className="form-row">
+          <label htmlFor="satisfaccionVisita" className="form-label">Satisfacción de la Visita:</label>
           <select
             name="satisfaccionVisita"
             value={formulario.satisfaccionVisita}
             onChange={handleChange}
-            required
+            className="form-input"
           >
-            <option value="">Selecciona</option>
-            <option value="alta">Alta</option>
-            <option value="baja">Baja</option>
+            <option value="Baja">Baja</option>
+            <option value="Media">Media</option>
+            <option value="Alta">Alta</option>
           </select>
         </div>
 
-        <div className="form-group">
-          <label>Nivel de Gasto Total</label>
+        <div className="form-row">
+          <label htmlFor="nivelGastoTotal" className="form-label">Nivel de Gasto Total:</label>
           <input
             type="number"
             name="nivelGastoTotal"
-            value={formulario.nivelGastoTotal || ""}
+            value={formulario.nivelGastoTotal}
             onChange={handleChange}
             required
+            className="form-input"
           />
         </div>
 
-        <div className="form-group">
-          <label>Cantidad de Actividades</label>
+        <div className="form-row">
+          <label htmlFor="cantidadActividades" className="form-label">Cantidad de Actividades:</label>
           <input
             type="number"
             name="cantidadActividades"
-            value={formulario.cantidadActividades || ""}
+            value={formulario.cantidadActividades}
             onChange={handleChange}
             required
+            className="form-input"
           />
         </div>
 
-        <div className="form-group">
-          <label>¿Planea Regresar? (Sí/No)</label>
-          <input
-            type="text"
+        <div className="form-row">
+          <label htmlFor="planeaRegresar" className="form-label">¿Planea Regresar?:</label>
+          <select
             name="planeaRegresar"
             value={formulario.planeaRegresar}
             onChange={handleChange}
-            required
-          />
+            className="form-input"
+          >
+            <option value="Si">Si</option>
+            <option value="No">No</option>
+          </select>
         </div>
 
-        <button type="submit">Predecir</button>
+        <button type="submit" className="prediccion-button" disabled={loading}>
+          {loading ? "Cargando..." : "Predecir"}
+        </button>
       </form>
 
       {resultado && (
         <div className="resultado">
-          <h2>Resultado:</h2>
-          <p><strong>Recomendar Cartagena:</strong> {resultado.recomendarCartagena}</p>
-          <p><strong>Confianza:</strong> {resultado.fiabilidad}</p>
+          <h2 className="resultado-title">Resultado de Predicción:</h2>
+          <p className="resultado-text">
+            Recomendar Cartagena: <span className="destacado">{resultado.recomendarCartagena}</span>
+          </p>
+          <p className="resultado-text">
+            Fiabilidad: <span className="destacado">{resultado.fiabilidad}</span>
+          </p>
         </div>
       )}
     </div>
   );
-}
+};
 
 export default App;

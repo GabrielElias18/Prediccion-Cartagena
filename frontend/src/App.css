@@ -1,61 +1,174 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #f0f4f8;
-  padding: 20px;
+/* Estilos profesionales para el componente de predicción */
+
+:root {
+  --primary-color: #1976d2;
+  --primary-light: #e3f2fd;
+  --primary-dark: #0d47a1;
+  --secondary-color: #f5f5f5;
+  --text-color: #333;
+  --text-light: #757575;
+  --error-color: #d32f2f;
+  --success-color: #2e7d32;
+  --border-radius: 6px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
 }
 
-.container {
-  max-width: 600px;
-  margin: auto;
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-h1 {
-  text-align: center;
-  color: #333;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-input[type="text"],
-input[type="number"] {
-  width: 100%;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+* {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-button {
-  background: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+body {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  color: var(--text-color);
+  padding: 2rem;
+  /* Quitar overflow hidden para permitir scroll en la página */
+}
+
+.prediccion-container {
+  max-width: 800px;
   width: 100%;
-  font-size: 16px;
+  margin: auto auto; /* Ajuste de margen superior */
+  padding: 2rem;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  /* Eliminamos scroll local y height fija */
 }
 
-button:hover {
-  background: #0056b3;
+
+.prediccion-title {
+  color: var(--primary-dark);
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  font-size: 2rem;
+  border-bottom: 2px solid var(--primary-light);
+  padding-bottom: 1rem;
+}
+
+.prediccion-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: var(--text-color);
+}
+
+.form-input {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+  background-color: white;
+  color: black;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.prediccion-button {
+  grid-column: span 2;
+  padding: 0.875rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 1rem;
+}
+
+.prediccion-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.prediccion-button:disabled {
+  background-color: var(--text-light);
+  cursor: not-allowed;
+}
+
+/* Resultados */
+.resultado {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: var(--primary-light);
+  border-radius: var(--border-radius);
+  border-left: 4px solid var(--primary-color);
+  width: 100%;
+  max-width: 700px;
+}
+
+.resultado-title {
+  margin-top: 0;
+  color: var(--primary-dark);
+}
+
+.resultado-text {
+  margin: 0.5rem 0;
+  font-size: 1.1rem;
+}
+
+.destacado {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .prediccion-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+
+  .prediccion-form {
+    grid-template-columns: 1fr;
+  }
+
+  .prediccion-button {
+    grid-column: span 1;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .resultado {
-  margin-top: 20px;
-  background: #e6f7ff;
-  padding: 15px;
-  border-left: 4px solid #1890ff;
-  border-radius: 8px;
+  animation: fadeIn 0.5s ease forwards;
 }
