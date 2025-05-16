@@ -1,6 +1,5 @@
 package com.weka.turismo_cartagena.servicios;
 
-
 import java.text.DecimalFormat;
 
 import org.springframework.core.io.ClassPathResource;
@@ -17,14 +16,16 @@ import weka.core.converters.ConverterUtils.DataSource;
 
 @Service
 public class PrediccionServicio {
-        
+
     private Instances dataStructure;
     private Classifier classifier;
 
     public PrediccionServicio() throws Exception {
+        // Cargar modelo
         ClassPathResource modelResource = new ClassPathResource("turismo.model");
         classifier = (Classifier) weka.core.SerializationHelper.read(modelResource.getInputStream());
 
+        // Cargar estructura de datos (sin Planea_Regresar)
         ClassPathResource arffResource = new ClassPathResource("turismo_cartagena_optimizado.arff");
         DataSource source = new DataSource(arffResource.getInputStream());
         dataStructure = source.getDataSet();
@@ -33,9 +34,9 @@ public class PrediccionServicio {
 
     public ResultadoDto predecir(DatosDto datos) {
         try {
-            Instance instance = new DenseInstance(11);
+            Instance instance = new DenseInstance(10); // 10 atributos sin Planea_Regresar
             instance.setDataset(dataStructure);
-            
+
             instance.setValue(0, datos.getLugarOrigen());
             instance.setValue(1, datos.getEdad());
             instance.setValue(2, datos.getTiempoEstancia());
@@ -45,7 +46,7 @@ public class PrediccionServicio {
             instance.setValue(6, datos.getSatisfaccionVisita());
             instance.setValue(7, datos.getNivelGastoTotal());
             instance.setValue(8, datos.getCantidadActividades());
-            instance.setValue(9, datos.getPlaneaRegresar());
+            // El índice 9 ahora es la clase a predecir (Recomendar_Cartagena)
 
             double predictionValue = classifier.classifyInstance(instance);
             String prediction = dataStructure.classAttribute().value((int) predictionValue);            
@@ -56,7 +57,7 @@ public class PrediccionServicio {
             String confidencePercentage = df.format(confidence * 100) + "%";
 
             return new ResultadoDto(prediction, confidencePercentage);
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;

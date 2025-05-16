@@ -12,7 +12,6 @@ public class DatosDto implements Serializable {
     private String satisfaccionVisita; // {Baja, Media, Alta}
     private int nivelGastoTotal; // NUMERIC
     private int cantidadActividades; // NUMERIC
-    private String planeaRegresar; // {Sí, No}
 
     // Getters and Setters
     public String getLugarOrigen() {
@@ -85,13 +84,5 @@ public class DatosDto implements Serializable {
 
     public void setCantidadActividades(int cantidadActividades) {
         this.cantidadActividades = cantidadActividades;
-    }
-
-    public String getPlaneaRegresar() {
-        return planeaRegresar;
-    }
-
-    public void setPlaneaRegresar(String planeaRegresar) {
-        this.planeaRegresar = planeaRegresar;
     }
 }
